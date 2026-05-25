@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>恋爱档案馆</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="phone-shell" aria-label="恋爱档案馆 H5">
+      <div class="grain"></div>
+      <section class="screen is-active home-screen" id="home" aria-label="首页">
+        <img class="hero-photo" alt="黄昏海边里的情侣背影" src="./hero-home-lower.jpg" />
+        <div class="shade"></div>
+
+        <header class="home-top">
+          <p class="script-logo">Our Love.</p>
+          <button class="round-btn music-toggle" aria-label="播放恋爱歌单" aria-pressed="false">
+            <i data-lucide="music-2"></i>
+            <span class="music-ring"></span>
+          </button>
+        </header>
+
+        <div class="now-playing" aria-live="polite">
+          <i data-lucide="music-2"></i>
+          <span>深夜恋爱歌单 · 慢慢喜欢你</span>
+        </div>
+
+        <div class="love-counter">
+          <div class="love-start-picker">
+            <span class="love-start-date">2024.08.17</span>
+            <button class="love-start-button" type="button">设置开始日</button>
+            <input class="love-start-input" type="date" value="2024-08-17" aria-label="设置恋爱开始日期" />
+          </div>
+          <p>我们已经相爱了</p>
+          <div class="big-number"><span class="love-days" data-count="286">286</span><small>天</small></div>
+          <span class="hairline"></span>
+          <p class="anniversary-label">距离 1 周年</p>
+          <p class="anniversary-days">还有 79 天</p>
+        </div>
+
+        <blockquote class="hero-quote">
+          “爱不会消失，<br />
+          它只是被记录了下来。”
+        </blockquote>
+
+        <div class="primary-actions">
+          <button class="glass pink" data-target="record">
+            <span>记录今天</span>
+            <small>记录此刻心情</small>
+          </button>
+          <button class="glass" data-target="archive">
+            <span>查看档案</span>
+            <small>我们的恋爱日记</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="screen paper-screen" id="record" aria-label="记录今天">
+        <header class="nav-bar">
+          <button class="icon-btn" data-target="home" aria-label="返回首页"><i data-lucide="chevron-left"></i></button>
+          <h1>记录今天</h1>
+          <span class="nav-spacer"></span>
+        </header>
+
+        <div class="paper-note">
+          <div class="paper-date">
+            <span>Date.</span>
+            <strong>2026 / 05 / 24</strong>
+          </div>
+          <div class="tape flower-tape"></div>
+
+          <div class="form-block">
+            <h2>① 今天的心情是？</h2>
+            <div class="mood-row" role="list" aria-label="今日心情">
+              <button class="mood">🥰</button>
+              <button class="mood">😭</button>
+              <button class="mood">😡</button>
+              <button class="mood is-selected">😴</button>
+              <button class="mood">🥺</button>
+              <button class="mood">❤️</button>
+            </div>
+          </div>
+
+          <label class="form-block">
+            <h2>② 想对 Ta 说一句话</h2>
+            <textarea maxlength="50">今天他给我带了冰美式，
+还是和以前一样宠我～</textarea>
+            <span class="word-count">23/50</span>
+          </label>
+
+          <div class="form-block">
+            <h2>③ 分享照片</h2>
+            <label class="photo-picker">
+              <input class="photo-input" type="file" accept="image/*" multiple />
+              <i data-lucide="image-plus"></i>
+              <span>上传多张照片</span>
+            </label>
+            <div class="photo-preview-list" aria-label="已上传照片">
+              <figure class="upload-card">
+                <img alt="两杯冰美式" src="./coffee-clean.jpg" />
+                <button class="remove-photo" type="button" aria-label="移除图片">×</button>
+                <figcaption>LOS ANGELES · 23:14 PM</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <button class="save-btn save-record">保存今天的记录</button>
+
+          <div class="forever-note">
+            <i data-lucide="lock-keyhole"></i>
+            <strong>恋爱记录将永久存档<br />删除请联系管理员</strong>
+            <p>因为真正重要的东西，不应该被情绪删掉。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen archive-screen" id="archive" aria-label="恋爱档案馆">
+        <header class="nav-bar dark">
+          <button class="icon-btn" data-target="home" aria-label="返回首页"><i data-lucide="chevron-left"></i></button>
+          <h1>恋爱档案馆 <span>♥</span></h1>
+          <button class="icon-btn" aria-label="筛选"><i data-lucide="sliders-horizontal"></i></button>
+        </header>
+
+        <div class="archive-head">
+          <p>OUR LOVE ARCHIVE</p>
+          <span>共记录了 <b class="archive-count">148</b> 条恋爱瞬间</span>
+        </div>
+
+        <div class="timeline">
+          <article class="memory-card">
+            <time>2026 / 05 / 20　周三</time>
+            <p class="emoji">🥺</p>
+            <p>“今天见面只有 2 小时，<br />但还是开心。”</p>
+            <img alt="咖啡杯" src="./coffee-clean.jpg" />
+          </article>
+          <article class="memory-card">
+            <time>2026 / 05 / 19　周二</time>
+            <p class="emoji">🥰</p>
+            <p>一起去看了日落，<br />真的好美好美。</p>
+            <img alt="日落下的情侣" src="./hero-home-crop.jpg" />
+          </article>
+          <article class="memory-card">
+            <time>2026 / 05 / 18　周一</time>
+            <p class="emoji">😭</p>
+            <p>因为一点小事吵架了，<br />但很快就和好了。</p>
+            <img alt="夜晚餐桌" src="./poster-night-clean.jpg" />
+          </article>
+          <article class="memory-card">
+            <time>2026 / 05 / 17　周日</time>
+            <p class="emoji">🥹</p>
+            <p>他做了我最爱的番茄炒蛋，<br />幸福～</p>
+            <img alt="晚餐" src="./food-clean.jpg" />
+          </article>
+        </div>
+
+        <div class="archive-bottom">
+          <button class="bottom-pill" data-target="record">追加新的爱 <i data-lucide="plus"></i></button>
+          <p class="locked-caption">记录不可删除，只能追加</p>
+        </div>
+      </section>
+
+      <section class="screen report-screen" id="report" aria-label="恋爱年度报告">
+        <img class="report-bg" alt="暮色情侣背影" src="./report-sunset-lower.jpg" />
+        <div class="shade report-shade"></div>
+
+        <header class="nav-bar dark">
+          <button class="icon-btn" data-target="archive" aria-label="返回档案馆"><i data-lucide="chevron-left"></i></button>
+          <h1>恋爱年度报告</h1>
+          <button class="icon-btn" data-target="poster" aria-label="生成海报"><i data-lucide="share"></i></button>
+        </header>
+
+        <nav class="report-tabs" aria-label="报告类型">
+          <button class="is-active" data-report-mode="year">全年报告</button>
+          <button data-report-mode="month">月度报告</button>
+        </nav>
+
+        <div class="report-content">
+          <p class="year">2026</p>
+          <h2>我们的恋爱报告 <span>♥</span></h2>
+          <p class="range">时间：2026.01.01 - 2026.12.31</p>
+          <dl class="stats">
+            <div><dt><i data-lucide="utensils"></i>一起吃饭</dt><dd>83 <small>次</small></dd></div>
+            <div><dt><i data-lucide="moon"></i>熬夜聊天</dt><dd>214 <small>小时</small></dd></div>
+            <div><dt><i data-lucide="calendar-heart"></i>见面</dt><dd>49 <small>次</small></dd></div>
+            <div><dt><i data-lucide="heart-crack"></i>吵架</dt><dd>7 <small>次</small></dd></div>
+            <div><dt><i data-lucide="heart-handshake"></i>和好</dt><dd>7 <small>次</small></dd></div>
+            <div><dt><i data-lucide="gift"></i>制造惊喜</dt><dd>23 <small>次</small></dd></div>
+          </dl>
+          <button class="wide-pink" data-target="poster">生成我的恋爱海报 <i data-lucide="heart"></i></button>
+        </div>
+      </section>
+
+      <section class="screen poster-screen" id="poster" aria-label="生成海报">
+        <header class="nav-bar dark">
+          <button class="icon-btn" data-target="report" aria-label="返回年度报告"><i data-lucide="chevron-left"></i></button>
+          <h1>生成海报</h1>
+          <span class="nav-spacer"></span>
+        </header>
+
+        <article class="poster-card">
+          <img alt="深夜路灯下的情侣" src="./poster-night-clean.jpg" />
+          <div class="poster-overlay"></div>
+          <div class="poster-copy">
+            <p>2026</p>
+            <h2>我们的恋爱报告</h2>
+            <blockquote>“爱不会消失，<br />它只是被记录了下来。”</blockquote>
+            <dl>
+              <div><dt>一起吃饭</dt><dd>83 次</dd></div>
+              <div><dt>熬夜聊天</dt><dd>214 小时</dd></div>
+              <div><dt>见面</dt><dd>49 次</dd></div>
+              <div><dt>吵架</dt><dd>7 次</dd></div>
+              <div><dt>和好</dt><dd>7 次</dd></div>
+            </dl>
+            <span class="poster-sign">Love Archive.</span>
+          </div>
+        </article>
+
+        <div class="poster-actions">
+          <button class="save-poster"><i data-lucide="download"></i>保存图片</button>
+          <button class="share-poster"><i data-lucide="heart"></i>分享给 Ta</button>
+        </div>
+      </section>
+
+      <p class="toast" aria-live="polite"></p>
+
+      <dialog class="start-dialog" aria-label="设置恋爱开始日">
+        <button class="start-dialog-close" type="button" aria-label="关闭">×</button>
+        <p>LOVE START</p>
+        <h2>设置恋爱开始日</h2>
+        <input class="start-dialog-input" type="date" aria-label="恋爱开始日期" />
+        <button class="start-dialog-save" type="button">保存并重算</button>
+      </dialog>
+
+      <dialog class="memory-dialog" aria-label="恋爱瞬间详情">
+        <button class="dialog-close" type="button" aria-label="关闭">×</button>
+        <div class="dialog-gallery-wrap">
+          <button class="dialog-arrow dialog-prev" type="button" aria-label="上一张">‹</button>
+          <div class="dialog-gallery"></div>
+          <button class="dialog-arrow dialog-next" type="button" aria-label="下一张">›</button>
+        </div>
+        <div class="dialog-dots"></div>
+        <time class="dialog-date"></time>
+        <p class="dialog-emoji"></p>
+        <p class="dialog-text"></p>
+      </dialog>
+
+      <nav class="tab-bar" aria-label="底部导航">
+        <button class="is-active" data-target="home"><i data-lucide="heart"></i><span>首页</span></button>
+        <button data-target="archive"><i data-lucide="archive"></i><span>档案馆</span></button>
+        <button data-target="report"><i data-lucide="bar-chart-3"></i><span>报告</span></button>
+        <button data-target="poster"><i data-lucide="user-round"></i><span>我的</span></button>
+      </nav>
+
+      <aside class="music-sheet" aria-label="恋爱歌单" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <header>
+          <p>LOVE RADIO</p>
+          <h2>深夜恋爱歌单</h2>
+        </header>
+        <label class="upload-song">
+          <input class="music-file" type="file" accept=".mp3,.m4a,.wav,.ogg,.flac,audio/*" />
+          <span>上传本地音乐</span>
+          <small>支持 MP3 / M4A / WAV，不支持 NCM 直播</small>
+        </label>
+        <button class="song is-active" data-song="慢慢喜欢你">
+          <span>01</span>
+          <strong>慢慢喜欢你</strong>
+          <small>胶片日落模式</small>
+        </button>
+        <button class="song" data-song="小幸运">
+          <span>02</span>
+          <strong>小幸运</strong>
+          <small>纪念日模式</small>
+        </button>
+        <button class="song" data-song="告白气球">
+          <span>03</span>
+          <strong>告白气球</strong>
+          <small>轻甜记录模式</small>
+        </button>
+        <button class="song" data-song="Love Story">
+          <span>04</span>
+          <strong>Love Story</strong>
+          <small>海报分享模式</small>
+        </button>
+      </aside>
+      <audio class="audio-player" preload="metadata"></audio>
+    </main>
+
+    <script src="./lucide.min.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
