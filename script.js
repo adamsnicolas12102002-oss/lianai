@@ -29,6 +29,9 @@ const reportYear = document.querySelector(".year");
 const reportTitle = document.querySelector(".report-content h2");
 const reportRange = document.querySelector(".range");
 const statsList = document.querySelector(".stats");
+const posterYear = document.querySelector(".poster-copy > p");
+const posterTitle = document.querySelector(".poster-copy h2");
+const posterStatsList = document.querySelector(".poster-copy dl");
 const timeline = document.querySelector(".timeline");
 const archiveCount = document.querySelector(".archive-count");
 const toast = document.querySelector(".toast");
@@ -53,6 +56,14 @@ const DEFAULT_LOVE_START_DATE = "2024-08-17";
 const BASE_ARCHIVE_COUNT = 148;
 let uploadedPhotos = ["./coffee-clean.jpg"];
 const WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+const REPORT_KEYWORDS = {
+  meals: ["吃饭", "早餐", "午餐", "晚餐", "夜宵", "宵夜", "火锅", "烧烤", "烤肉", "奶茶", "咖啡", "冰美式", "餐厅", "做饭", "外卖", "甜品", "蛋糕"],
+  chat: ["聊天", "电话", "视频", "语音", "晚安", "早安", "熬夜", "睡不着", "消息", "微信", "分享", "想你", "陪我聊"],
+  meet: ["见面", "约会", "一起", "陪我", "来找我", "去找", "牵手", "拥抱", "看电影", "逛街", "散步", "日落", "旅行", "拍照"],
+  fight: ["吵架", "生气", "冷战", "哭", "难过", "委屈", "不开心", "争吵", "闹别扭", "发脾气"],
+  makeup: ["和好", "道歉", "哄", "原谅", "抱抱", "没事了", "不气了", "讲开", "复合"],
+  surprise: ["惊喜", "礼物", "花", "玫瑰", "蛋糕", "纪念日", "红包", "准备了", "偷偷", "仪式感"]
+};
 const DEFAULT_RECORDS = [
   {
     id: "default-20260520",
@@ -87,38 +98,14 @@ const DEFAULT_RECORDS = [
     images: ["./food-clean.jpg"]
   }
 ];
-const REPORTS = {
-  year: {
-    year: "2026",
-    title: "我们的恋爱报告",
-    range: "时间：2026.01.01 - 2026.12.31",
-    stats: [
-      ["utensils", "一起吃饭", "83", "次"],
-      ["moon", "熬夜聊天", "214", "小时"],
-      ["calendar-heart", "见面", "49", "次"],
-      ["heart-crack", "吵架", "7", "次"],
-      ["heart-handshake", "和好", "7", "次"],
-      ["gift", "制造惊喜", "23", "次"]
-    ]
-  },
-  month: {
-    year: "05",
-    title: "五月恋爱月报",
-    range: "时间：2026.05.01 - 2026.05.31",
-    stats: [
-      ["utensils", "一起吃饭", "9", "次"],
-      ["moon", "熬夜聊天", "31", "小时"],
-      ["calendar-heart", "见面", "6", "次"],
-      ["heart-crack", "吵架", "1", "次"],
-      ["heart-handshake", "和好", "1", "次"],
-      ["gift", "制造惊喜", "3", "次"]
-    ]
-  }
-};
+let activeReportMode = "year";
 
 function showScreen(id) {
   if (id === "record") {
     syncPaperDate();
+  }
+  if (id === "report" || id === "poster") {
+    renderReport(activeReportMode);
   }
 
   screens.forEach((screen) => {
@@ -147,6 +134,7 @@ function commitLoveStartDate({ silent = false } = {}) {
 
   localStorage.setItem(LOVE_START_KEY, loveStartInput.value);
   renderLoveStartDate(loveStartInput.value);
+  renderReport(activeReportMode);
   lastCommittedLoveStartDate = loveStartInput.value;
 
   if (!silent && hasChanged) {
@@ -236,6 +224,21 @@ function formatStartDate(value) {
   return String(value).replaceAll("-", ".");
 }
 
+function parseRecordDate(record) {
+  if (record.createdAt) {
+    const createdAt = new Date(record.createdAt);
+    if (!Number.isNaN(createdAt.getTime())) {
+      return createdAt;
+    }
+  }
+
+  const match = String(record.date || "").match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+  if (!match) {
+    return null;
+  }
+  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+}
+
 function diffDays(fromDate, toDate) {
   const start = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
   const end = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate());
@@ -284,6 +287,97 @@ function renderLoveStartDate(value) {
 function initLoveStartDate() {
   const savedDate = localStorage.getItem(LOVE_START_KEY) || DEFAULT_LOVE_START_DATE;
   renderLoveStartDate(savedDate);
+}
+
+function isSameMonth(date, now = new Date()) {
+  return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+}
+
+function isSameYear(date, now = new Date()) {
+  return date.getFullYear() === now.getFullYear();
+}
+
+function hasAnyKeyword(text, keywords) {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
+function getReportRecords(mode) {
+  const now = new Date();
+  const startDate = parseLocalDate(localStorage.getItem(LOVE_START_KEY) || DEFAULT_LOVE_START_DATE);
+  return getSavedRecords().filter((record) => {
+    const date = parseRecordDate(record);
+    if (!date) return false;
+    if (startDate && date < startDate) return false;
+    return mode === "month" ? isSameMonth(date, now) : isSameYear(date, now);
+  });
+}
+
+function countRecordsByKeywords(records, keywords) {
+  return records.filter((record) => hasAnyKeyword(record.text || "", keywords)).length;
+}
+
+function buildReport(mode = activeReportMode) {
+  const now = new Date();
+  const records = getReportRecords(mode);
+  const totalRecords = records.length;
+  const moods = records.map((record) => record.mood || "");
+  const texts = records.map((record) => record.text || "");
+  const moodTextPairs = records.map((record) => `${record.mood || ""} ${record.text || ""}`);
+
+  const meals = countRecordsByKeywords(records, REPORT_KEYWORDS.meals);
+  const chatKeywordCount = countRecordsByKeywords(records, REPORT_KEYWORDS.chat);
+  const meet = countRecordsByKeywords(records, REPORT_KEYWORDS.meet);
+  const fight = records.filter((record) => {
+    const content = `${record.mood || ""} ${record.text || ""}`;
+    return record.mood === "😡" || hasAnyKeyword(content, REPORT_KEYWORDS.fight);
+  }).length;
+  const makeup = countRecordsByKeywords(records, REPORT_KEYWORDS.makeup);
+  const surprise = countRecordsByKeywords(records, REPORT_KEYWORDS.surprise);
+
+  const cryingOrSoft = moodTextPairs.filter((content) => content.includes("😭") || content.includes("🥺") || content.includes("🥹")).length;
+  const happy = moods.filter((mood) => mood === "🥰" || mood === "❤️").length;
+  const uploadPhotos = records.reduce((sum, record) => sum + normalizeRecordImages(record).length, 0);
+  const chat = chatKeywordCount;
+  const year = String(now.getFullYear());
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+  const range = mode === "month"
+    ? `时间：${year}.${month}.01 - ${year}.${month}.${String(monthEnd).padStart(2, "0")}`
+    : `时间：${year}.01.01 - ${year}.12.31`;
+
+  return {
+    year: mode === "month" ? month : year,
+    title: mode === "month" ? `${Number(month)}月恋爱月报` : "我们的恋爱报告",
+    range,
+    records,
+    stats: [
+      ["utensils", "一起吃饭", meals, "次"],
+      ["moon", "熬夜聊天", chat, "次"],
+      ["calendar-heart", "见面", meet, "次"],
+      ["heart-crack", "吵架", fight, "次"],
+      ["heart-handshake", "和好", makeup, "次"],
+      ["gift", "制造惊喜", surprise, "次"]
+    ],
+    posterStats: [
+      ["一起吃饭", `${meals} 次`],
+      ["熬夜聊天", `${chat} 次`],
+      ["见面", `${meet} 次`],
+      ["吵架", `${fight} 次`],
+      ["和好", `${makeup} 次`]
+    ],
+    insight: totalRecords
+      ? `共记录 ${totalRecords} 条真实瞬间，${uploadPhotos} 张照片，开心心情 ${happy} 次。`
+      : "还没有真实记录，保存今天后报告会自动生成。"
+  };
+}
+
+function renderPosterPreview(report) {
+  posterYear.textContent = report.year;
+  posterTitle.textContent = report.title;
+  posterStatsList.innerHTML = report.posterStats
+    .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
+    .join("");
 }
 
 function getSavedRecords() {
@@ -425,6 +519,7 @@ function saveTodayRecord() {
   records.push(record);
   setSavedRecords(records);
   renderArchive();
+  renderReport(activeReportMode);
   showScreen("archive");
   showToast("已永久存档，档案馆 +1");
 }
@@ -609,6 +704,7 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
 }
 
 async function createPosterBlob() {
+  const report = buildReport(activeReportMode);
   const canvas = document.createElement("canvas");
   canvas.width = 1080;
   canvas.height = 1920;
@@ -630,34 +726,26 @@ async function createPosterBlob() {
 
   ctx.fillStyle = "#f8f1e7";
   ctx.font = "42px Georgia, serif";
-  ctx.fillText("2026", 96, 156);
+  ctx.fillText(report.year, 96, 156);
   ctx.font = "44px Microsoft YaHei, sans-serif";
-  ctx.fillText("我们的恋爱报告", 96, 218);
+  ctx.fillText(report.title, 96, 218);
   ctx.font = "52px KaiTi, serif";
   drawWrappedText(ctx, "“爱不会消失，\n它只是被记录了下来。”", 96, 388, 820, 82);
 
-  const stats = [
-    ["一起吃饭", "83 次"],
-    ["熬夜聊天", "214 小时"],
-    ["见面", "49 次"],
-    ["吵架", "7 次"],
-    ["和好", "7 次"],
-    ["制造惊喜", "23 次"]
-  ];
   ctx.font = "30px Microsoft YaHei, sans-serif";
-  stats.forEach(([label, value], index) => {
+  report.stats.forEach(([, label, value, unit], index) => {
     const rowY = 830 + index * 64;
     ctx.fillStyle = "rgba(248, 241, 231, 0.78)";
     ctx.fillText(label, 106, rowY);
     ctx.fillStyle = "#fff8ef";
-    ctx.fillText(value, 360, rowY);
+    ctx.fillText(`${value} ${unit}`, 360, rowY);
   });
 
   ctx.font = "42px Segoe Script, cursive";
   ctx.fillText("Love Archive.", 382, 1680);
   ctx.font = "24px Georgia, serif";
   ctx.fillStyle = "rgba(248, 241, 231, 0.72)";
-  ctx.fillText("2026 / 01 / 01 - 2026 / 12 / 31", 348, 1738);
+  ctx.fillText(report.range.replace("时间：", "").replaceAll(".", " / "), 300, 1738);
 
   return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
 }
@@ -767,8 +855,9 @@ audioPlayer.addEventListener("play", () => {
   nowPlaying.classList.add("is-visible");
 });
 
-function renderReport(mode) {
-  const report = REPORTS[mode];
+function renderReport(mode = activeReportMode) {
+  activeReportMode = mode;
+  const report = buildReport(mode);
   reportTabButtons.forEach((button) => {
     button.classList.toggle("is-active", button.dataset.reportMode === mode);
   });
@@ -780,6 +869,7 @@ function renderReport(mode) {
       <div><dt><i data-lucide="${icon}"></i>${label}</dt><dd>${value} <small>${unit}</small></dd></div>
     `)
     .join("");
+  renderPosterPreview(report);
   window.lucide?.createIcons();
 }
 
@@ -836,6 +926,7 @@ syncPaperDate();
 migrateSavedRecords();
 renderPhotoPreviews();
 renderArchive();
+renderReport(activeReportMode);
 
 if (window.lucide) {
   window.lucide.createIcons();
